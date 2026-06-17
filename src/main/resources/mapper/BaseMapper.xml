@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.BaseMapper">
+<!--    <select id="selectTagByAttr" resultType="java.util.Map">-->
+<!--        match (n:Instance:测点)-[:CHILD_NODE]->(m:特征) where id(m)=#{attrId}  return distinct-->
+<!--            id(n) as id, n.名称 as 名称, n.编码 as 编码, n.描述 as 描述, n.类别 as 类别, n.单位 as 单位-->
+<!--    </select>-->
+
+    <select id="selectTagByAttr" resultType="java.util.Map">
+        MATCH (m:特征)-[:REFERENCE_SHADOW]->(i:Instance:`特征`)
+            WHERE id(m) = #{attrId}
+            WITH id(i) AS instanceId
+
+        MATCH (n:Instance:测点)-[:CHILD_NODE]->(m2:特征)
+            WHERE id(m2) = instanceId
+
+            RETURN DISTINCT id(n) AS id, n.名称 AS 名称, n.编码 AS 编码, n.描述 AS 描述, n.类别 AS 类别, n.单位 AS 单位
+    </select>
+</mapper>
