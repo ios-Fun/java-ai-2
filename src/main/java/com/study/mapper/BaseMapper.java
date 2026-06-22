@@ -7,4 +7,11 @@ import java.util.Map;
 
 public interface BaseMapper {
     List<Map> selectTagByAttr(@Param("attrId")Long attrId);
+
+    /**
+     * 根据设备名称模糊查询设备信息
+     * @param assetName 设备名称
+     * @return
+     */
+    List<Map> selectAssetPropByAssetName(@Param("assetName") String assetName);
 }

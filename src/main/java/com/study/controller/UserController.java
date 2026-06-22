@@ -24,4 +24,11 @@ public class UserController {
         List<Map> list = baseMapper.selectTagByAttr(Long.valueOf(nodeId));
         return list;
     }
+
+    @PostMapping("/assets")
+    public List<Map> getAssets(@RequestParam String assetName) {
+        //
+        List<Map> list = baseMapper.selectAssetPropByAssetName(assetName);
+        return list;
+    }
 }

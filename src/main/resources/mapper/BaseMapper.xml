@@ -16,4 +16,19 @@
 
             RETURN DISTINCT id(n) AS id, n.名称 AS 名称, n.编码 AS 编码, n.描述 AS 描述, n.类别 AS 类别, n.单位 AS 单位
     </select>
+
+    <select id="selectAssetPropByAssetName" resultType="java.util.Map">
+        MATCH (n:Instance:测点)-[:CHILD_NODE]->(attr:Instance:特征)-[:CHILD_NODE]->(bj:Instance:部件)-[:CHILD_NODE*0..]->(sb:Instance:设备)
+        -[:CHILD_NODE*0..]->(zxt:Instance:子系统)-[:CHILD_NODE*0..]->(jz:Instance:机组)
+        <if test="assetName != null and assetName != ''">
+            where sb.名称 contains #{assetName}
+        </if>
+        return distinct
+            n.源标签点名 as srcTagName, n.名称 as tagName, n.编码 as tagCode, n.源标签点描述 as tagDesc, n.类别 as tagType, n.单位 as tagUnit,
+            attr.名称 as attrName, attr.编码 as attrCode, attr.描述 as attrDesc, attr.类别 as attrType, attr.单位 as attrUnit,
+            bj.名称 as partName, bj.编码 as partCode, bj.描述 as partDesc, id(bj) as partId,
+            sb.名称 as assetName, sb.编码 as assetCode, sb.描述 as assetDesc, id(sb) as assetId,
+            zxt.名称 as subSystemName, zxt.编码 as subSystemCode, zxt.描述 as subSystemDesc, id(zxt) as subSystemId,
+            jz.名称 as unitName, jz.编码 as unitCode, jz.描述 as unitDesc, id(jz) as unitId
+    </select>
 </mapper>
