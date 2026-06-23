@@ -13,5 +13,5 @@ public interface BaseMapper {
      * @param assetName 设备名称
      * @return
      */
-    List<Map> selectAssetPropByAssetName(@Param("assetName") String assetName);
+    List<Map> selectUnitsOrAssetsPropsByInstanceName(@Param("assetName") String assetName, @Param("unitName") String unitName);
 }

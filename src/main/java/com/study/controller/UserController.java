@@ -25,10 +25,17 @@ public class UserController {
         return list;
     }
 
-    @PostMapping("/assets")
-    public List<Map> getAssets(@RequestParam String assetName) {
+    /**
+     * 根据实例名称获取设备或机组链式关系
+     * @param assetName 设备名称
+     * @param unitName  机组名称
+     * @return
+     */
+    @PostMapping("/unitsOrAssets")
+    public List<Map> getUnitsOrAssetsProps(@RequestParam(required = false) String assetName,
+                               @RequestParam(required = false) String unitName) {
         //
-        List<Map> list = baseMapper.selectAssetPropByAssetName(assetName);
+        List<Map> list = baseMapper.selectUnitsOrAssetsPropsByInstanceName(assetName, unitName);
         return list;
     }
 }
