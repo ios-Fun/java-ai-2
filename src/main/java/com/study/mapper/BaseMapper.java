@@ -14,4 +14,7 @@ public interface BaseMapper {
      * @return
      */
     List<Map> selectUnitsOrAssetsPropsByInstanceName(@Param("assetName") String assetName, @Param("unitName") String unitName);
+
+
+    List<Map> getItems(@Param("unitId")Integer unitId,@Param("type") String type);
 }

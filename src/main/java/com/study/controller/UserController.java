@@ -38,4 +38,13 @@ public class UserController {
         List<Map> list = baseMapper.selectUnitsOrAssetsPropsByInstanceName(assetName, unitName);
         return list;
     }
+
+
+    @PostMapping("/getItems")
+    public List<Map> getItems(@RequestParam Integer unitId, @RequestParam String type) {
+        List<Map> list = baseMapper.getItems(unitId, type);
+        return list.stream()
+                .map(m -> (Map) m.get("item"))
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

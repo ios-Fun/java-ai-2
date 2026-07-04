@@ -34,4 +34,9 @@
             zxt.名称 as subSystemName, zxt.编码 as subSystemCode, zxt.描述 as subSystemDesc, id(zxt) as subSystemId,
             jz.名称 as unitName, jz.编码 as unitCode, jz.描述 as unitDesc, id(jz) as unitId
     </select>
+    <select id="getItems" resultType="java.util.Map">
+        MATCH (n:Instance)-[:CHILD_NODE*0..]->(m)
+        WHERE id(m) = #{unitId} AND n:${type}
+        RETURN properties(n) AS item
+    </select>
 </mapper>
