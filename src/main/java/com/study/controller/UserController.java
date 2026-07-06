@@ -8,8 +8,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/graph")
@@ -46,5 +48,32 @@ public class UserController {
         return list.stream()
                 .map(m -> (Map) m.get("item"))
                 .collect(java.util.stream.Collectors.toList());
+    }
+
+    @PostMapping("/getTagInfosByName")
+    public List<Map> getTagInfosByName(@RequestParam String name) {
+        List<Map> list = baseMapper.getTagInfosByName(name);
+        return list.stream()
+                .map(m -> (Map) m.get("item"))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @PostMapping("/getTagInfosByTTS")
+    public List<Map> getTagInfosByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName) {
+        List<Map> list = baseMapper.getTagInfosByTTS(tagId, tagName, srcTagName);
+        return list.stream()
+                .map(m -> (Map) m.get("item"))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @PostMapping("/getTagPathsByTTS")
+    public List<Map> getTagPathsByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName) {
+        List<Map> flatList = baseMapper.getTagPathsByTTS(tagId, tagName, srcTagName);
+        return flatList;
+    }
+
+    @PostMapping("/getSubSystemIdByTTS")
+    public Integer getSubSystemIdByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName){
+        return baseMapper.getSubSystemIdByTTS(tagId, tagName, srcTagName);
     }
 }

@@ -17,4 +17,12 @@ public interface BaseMapper {
 
 
     List<Map> getItems(@Param("unitId")Integer unitId,@Param("type") String type);
+
+    List<Map> getTagInfosByName(@Param("name") String name);
+
+    List<Map> getTagInfosByTTS(@Param("tagId")Integer tagId,@Param("tagName") String tagName,@Param("srcTagName") String srcTagName);
+
+    List<Map> getTagPathsByTTS(@Param("tagId")Integer tagId,@Param("tagName") String tagName,@Param("srcTagName") String srcTagName);
+
+    Integer getSubSystemIdByTTS(@Param("tagId")Integer tagId,@Param("tagName") String tagName,@Param("srcTagName") String srcTagName);
 }

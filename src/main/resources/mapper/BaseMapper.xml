@@ -39,4 +39,60 @@
         WHERE id(m) = #{unitId} AND n:${type}
         RETURN properties(n) AS item
     </select>
+    <select id="getTagInfosByName" resultType="java.util.Map">
+        MATCH (n:测点:Instance)
+        WHERE n.名称 contains #{name}
+        RETURN properties(n) AS item
+    </select>
+    <select id="getTagInfosByTTS" resultType="java.util.Map">
+        MATCH (n:测点:Instance)
+        WHERE 1=1
+        <if test="tagId != null">
+            AND id(n) = #{tagId}
+        </if>
+        <if test="tagName != null">
+            AND n.编码 = #{tagName}
+        </if>
+        <if test="srcTagName != null">
+            AND n.源标签点名 = #{srcTagName}
+        </if>
+        RETURN properties(n) AS item
+    </select>
+    <select id="getTagPathsByTTS" resultType="java.util.Map">
+        MATCH p = (a)-[:CHILD_NODE]->(b:特征:Instance)-[:CHILD_NODE*0..]->(c:机组:Instance)
+        WHERE 1=1
+        AND none(nod in nodes(p) where nod:故障模式)
+        AND none(nod in nodes(p) where nod:预警模型)
+        <if test="tagId != null">
+            AND id(a) = #{tagId}
+        </if>
+        <if test="tagName != null">
+            AND a.编码 = #{tagName}
+        </if>
+        <if test="srcTagName != null">
+            AND a.源标签点名 = #{srcTagName}
+        </if>
+        WITH p, toString(id(NODES(p)[0])) + '-' + toString(length(p)) AS pathId
+        UNWIND RANGE(0, length(p)) AS nodeIndex
+        WITH pathId, nodeIndex, NODES(p)[nodeIndex] AS n
+        RETURN
+            pathId,
+            nodeIndex,
+            id(n) AS nodeId,
+            n.名称 AS nodeName
+    </select>
+    <select id="getSubSystemIdByTTS" resultType="java.lang.Integer">
+        MATCH (a)-[:CHILD_NODE*0..]->(c:子系统:Instance)
+        WHERE 1=1
+        <if test="tagId != null">
+            AND id(a) = #{tagId}
+        </if>
+        <if test="tagName != null">
+            AND a.编码 = #{tagName}
+        </if>
+        <if test="srcTagName != null">
+            AND a.源标签点名 = #{srcTagName}
+        </if>
+        return id(c) limit 1
+    </select>
 </mapper>
