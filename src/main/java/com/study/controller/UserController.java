@@ -76,4 +76,9 @@ public class UserController {
     public Integer getSubSystemIdByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName){
         return baseMapper.getSubSystemIdByTTS(tagId, tagName, srcTagName);
     }
+
+    @PostMapping("/getInstanceList")
+    public List<Map> getInstanceList(){
+        return baseMapper.getInstanceList();
+    }
 }

@@ -95,4 +95,9 @@
         </if>
         return id(c) limit 1
     </select>
+    <select id="getInstanceList" resultType ="java.util.Map">
+        MATCH (n:Instance)
+        WHERE n.类别 <![CDATA[<>]]> "特征"
+        RETURN n.类别 AS type, id(n) AS id, n.编码 AS code, n.名称 AS name
+    </select>
 </mapper>
