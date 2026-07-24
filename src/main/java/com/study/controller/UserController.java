@@ -72,6 +72,12 @@ public class UserController {
         return flatList;
     }
 
+    @PostMapping("/getPathByNodeId")
+    public List<String> getPathByNodeId(@RequestParam Integer nodeId) {
+            List<String> flatList = baseMapper.getPathByNodeId(nodeId);
+        return flatList;
+    }
+
     @PostMapping("/getSubSystemIdByTTS")
     public Integer getSubSystemIdByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName){
         return baseMapper.getSubSystemIdByTTS(tagId, tagName, srcTagName);

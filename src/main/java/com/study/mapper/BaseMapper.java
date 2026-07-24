@@ -27,4 +27,6 @@ public interface BaseMapper {
     Integer getSubSystemIdByTTS(@Param("tagId")Integer tagId,@Param("tagName") String tagName,@Param("srcTagName") String srcTagName);
 
     List<Map> getInstanceList();
+
+    List<String> getPathByNodeId(Integer nodeId);
 }
