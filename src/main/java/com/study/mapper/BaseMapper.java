@@ -28,5 +28,7 @@ public interface BaseMapper {
 
     List<Map> getInstanceList();
 
+    List<Map> getAllTags(@Param("type")  String type, @Param("parentName")  String parentName);
+
     List<String> getPathByNodeId(Integer nodeId);
 }

@@ -40,12 +40,12 @@
         RETURN properties(n) AS item
     </select>
     <select id="getTagInfosByName" resultType="java.util.Map">
-        MATCH (n:测点:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)
+        MATCH (n:测点:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)-[:CHILD_NODE*0..]->(nm:系统:Instance)
         WHERE n.名称 contains #{name}
-        RETURN distinct apoc.map.merge(properties(n), {subSystemId: id(m)}) AS item
+        RETURN distinct apoc.map.merge(properties(n), {subSystemId: id(m), subSystemName: m.名称, systemId: id(nm), systemName: nm.名称}) AS item
     </select>
     <select id="getTagInfosByTTS" resultType="java.util.Map">
-        MATCH (n:测点:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)
+        MATCH (n:测点:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)-[:CHILD_NODE*0..]->(nm:系统:Instance)
         WHERE 1=1
         <if test="tagId != null">
             AND id(n) = #{tagId}
@@ -56,7 +56,7 @@
         <if test="srcTagName != null">
             AND n.源标签点名 = #{srcTagName}
         </if>
-        RETURN distinct apoc.map.merge(properties(n), {subSystemId: id(m)}) AS item
+        RETURN distinct apoc.map.merge(properties(n), {subSystemId: id(m), subSystemName: m.名称, systemId: id(nm), systemName: nm.名称}) AS item
     </select>
     <select id="getTagPathsByTTS" resultType="java.util.Map">
         MATCH p = (a)-[:CHILD_NODE]->(b:特征:Instance)-[:CHILD_NODE*0..]->(c:机组:Instance)
@@ -105,5 +105,37 @@
         MATCH (n:Instance)
         WHERE n.类别 <![CDATA[<>]]> "特征"
         RETURN n.类别 AS type, id(n) AS id, n.编码 AS code, n.名称 AS name
+    </select>
+    <select id="getAllTags" resultType="java.util.Map">
+        MATCH
+        (n:Instance:测点)-[:CHILD_NODE*0..]->(d:设备:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)-[:CHILD_NODE*0..]->(nm:系统:Instance)
+        WHERE 1=1
+        <if test="type != null and type != '' and parentName != null and parentName != ''">
+            <choose>
+                <when test="type == '系统'">
+                    AND nm.名称 = #{parentName}
+                </when>
+                <when test="type == '子系统'">
+                    AND m.名称 = #{parentName}
+                </when>
+                <when test="type == '设备'">
+                    AND d.名称 = #{parentName}
+                </when>
+            </choose>
+        </if>
+
+        RETURN
+        id(nm) as systemId,
+        nm.名称 as systemName,
+        id(m) as subSystemId,
+        m.名称 as subSystemName,
+        id(d) as deviceId,
+        d.名称 as deviceName,
+        id(n) as tagId,
+        n.名称 as name,
+        n.编码 as tagCode,
+        n.源标签点名 as srcTagName,
+        n.源标签点描述 as srcTagDesc,
+        n.单位 as unit
     </select>
 </mapper>

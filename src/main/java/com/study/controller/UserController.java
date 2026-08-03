@@ -1,17 +1,14 @@
 package com.study.controller;
 
 import com.study.mapper.BaseMapper;
-import com.study.model.UserModel;
-import com.study.result.PageParam;
-import com.study.result.PageResult;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/graph")
@@ -29,13 +26,14 @@ public class UserController {
 
     /**
      * 根据实例名称获取设备或机组链式关系
+     *
      * @param assetName 设备名称
      * @param unitName  机组名称
      * @return
      */
     @PostMapping("/unitsOrAssets")
     public List<Map> getUnitsOrAssetsProps(@RequestParam(required = false) String assetName,
-                               @RequestParam(required = false) String unitName) {
+                                           @RequestParam(required = false) String unitName) {
         //
         List<Map> list = baseMapper.selectUnitsOrAssetsPropsByInstanceName(assetName, unitName);
         return list;
@@ -74,17 +72,22 @@ public class UserController {
 
     @PostMapping("/getPathByNodeId")
     public List<String> getPathByNodeId(@RequestParam Integer nodeId) {
-            List<String> flatList = baseMapper.getPathByNodeId(nodeId);
+        List<String> flatList = baseMapper.getPathByNodeId(nodeId);
         return flatList;
     }
 
     @PostMapping("/getSubSystemIdByTTS")
-    public Integer getSubSystemIdByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName){
+    public Integer getSubSystemIdByTTS(@RequestParam(required = false) Integer tagId, @RequestParam(required = false) String tagName, @RequestParam(required = false) String srcTagName) {
         return baseMapper.getSubSystemIdByTTS(tagId, tagName, srcTagName);
     }
 
     @PostMapping("/getInstanceList")
     public List<Map> getInstanceList(){
         return baseMapper.getInstanceList();
+    }
+
+    @PostMapping("/getAllTags")
+    public List<Map> getAllTags(String type, String parentName) {
+        return baseMapper.getAllTags(type, parentName);
     }
 }
