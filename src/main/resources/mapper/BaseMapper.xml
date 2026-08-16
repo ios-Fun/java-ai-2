@@ -138,4 +138,49 @@
         n.源标签点描述 as srcTagDesc,
         n.单位 as unit
     </select>
+
+    <select id="selectEnvironmentalExamplesByFuzzyMatching" resultType="java.util.Map">
+        WITH ['SO₂', 'NOx', '烟尘', '颗粒物', '氨逃逸', '脱硫效率', '脱硝效率', '除尘效率',
+        '烟气流量', '烟气温度', '烟气含氧量', 'pH', 'COD', '氨氮', '废水', '粉煤灰',
+        '炉渣', '脱硫石膏', 'CO₂', '碳排放', '供电煤耗', '厂用电率', 'CEMS',
+        '排放浓度', '排放总量', '超低排放', '达标排放'] AS keywords
+
+        CALL {
+        WITH keywords
+        MATCH (n:Instance:测点)-[:CHILD_NODE*0..]->(m:子系统:Instance)
+        RETURN n,m, '测点' AS tagType
+
+        UNION ALL
+
+        WITH keywords
+        MATCH (n:Instance:指标)-[:CHILD_NODE*0..]->(m:子系统:Instance)
+        RETURN n,m, '指标' AS tagType
+        }
+        WITH n,m, tagType
+        WHERE 1=1
+        AND ANY(k IN keywords WHERE n.名称 CONTAINS k)
+
+        <if test="fuzzyName != null and fuzzyName != ''">
+            AND n.名称 CONTAINS #{fuzzyName}
+        </if>
+
+        <if test="id != null and id != ''">
+            AND n.id = #{id}
+        </if>
+
+        <if test="tagName != null and tagName != ''">
+            AND n.编码 = #{tagName}
+        </if>
+
+        RETURN
+        id(m) as subSystemId,
+        m.名称 as subSystemName,
+        id(n) as tagId,
+        n.名称 as name,
+        n.编码 as tagCode,
+        n.源标签点名 as srcTagName,
+        n.源标签点描述 as srcTagDesc,
+        n.单位 as unit,
+        tagType as tagType
+    </select>
 </mapper>

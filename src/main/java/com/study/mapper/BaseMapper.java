@@ -31,4 +31,6 @@ public interface BaseMapper {
     List<Map> getAllTags(@Param("type")  String type, @Param("parentName")  String parentName);
 
     List<String> getPathByNodeId(Integer nodeId);
+
+    List<Map> selectEnvironmentalExamplesByFuzzyMatching(@Param("id") Integer id, @Param("tagName") String tagName, @Param("fuzzyName") String fuzzyName);
 }
