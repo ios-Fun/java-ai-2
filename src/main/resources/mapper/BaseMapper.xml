@@ -45,7 +45,7 @@
         RETURN distinct apoc.map.merge(properties(n), {subSystemId: id(m), subSystemName: m.名称, systemId: id(nm), systemName: nm.名称}) AS item
     </select>
     <select id="getTagInfosByTTS" resultType="java.util.Map">
-        MATCH (n:测点:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)-[:CHILD_NODE*0..]->(nm:系统:Instance)
+        MATCH (n:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)-[:CHILD_NODE*0..]->(nm:系统:Instance)
         WHERE 1=1
         <if test="tagId != null">
             AND id(n) = #{tagId}
@@ -169,18 +169,12 @@
     </select>
 
     <select id="selectEnvironmentalExamplesByFuzzyMatching" resultType="java.util.Map">
-        WITH ['SO₂', 'NOx', '烟尘', '颗粒物', '氨逃逸', '脱硫效率', '脱硝效率', '除尘效率',
-        '烟气流量', '烟气温度', '烟气含氧量', 'pH', 'COD', '氨氮', '废水', '粉煤灰',
-        '炉渣', '脱硫石膏', 'CO₂', '碳排放', '供电煤耗', '厂用电率', 'CEMS',
+        WITH ['SO', 'NO', '烟尘', '颗粒物', '氨逃逸', '脱硫效率', '脱硝效率', '除尘效率',
+        '烟气流量', '烟气温度', '烟气含氧量', 'pH', '氨氮', '废水', '粉煤灰',
+        '炉渣', '脱硫石膏', 'CO', '碳排放', '供电煤耗', '厂用电率', 'CEMS',
         '排放浓度', '排放总量', '超低排放', '达标排放'] AS keywords
 
         CALL {
-        WITH keywords
-        MATCH (n:Instance:测点)-[:CHILD_NODE*0..]->(m:子系统:Instance)
-        RETURN n,m, '测点' AS tagType
-
-        UNION ALL
-
         WITH keywords
         MATCH (n:Instance:指标)-[:CHILD_NODE*0..]->(m:子系统:Instance)
         RETURN n,m, '指标' AS tagType
