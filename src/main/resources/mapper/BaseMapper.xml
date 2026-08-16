@@ -107,36 +107,65 @@
         RETURN n.类别 AS type, id(n) AS id, n.编码 AS code, n.名称 AS name
     </select>
     <select id="getAllTags" resultType="java.util.Map">
-        MATCH
-        (n:Instance:测点)-[:CHILD_NODE*0..]->(d:设备:Instance)-[:CHILD_NODE*0..]->(m:子系统:Instance)-[:CHILD_NODE*0..]->(nm:系统:Instance)
-        WHERE 1=1
-        <if test="type != null and type != '' and parentName != null and parentName != ''">
-            <choose>
-                <when test="type == '系统'">
-                    AND nm.名称 = #{parentName}
-                </when>
-                <when test="type == '子系统'">
-                    AND m.名称 = #{parentName}
-                </when>
-                <when test="type == '设备'">
-                    AND d.名称 = #{parentName}
-                </when>
-            </choose>
-        </if>
-
-        RETURN
-        id(nm) as systemId,
-        nm.名称 as systemName,
-        id(m) as subSystemId,
-        m.名称 as subSystemName,
-        id(d) as deviceId,
-        d.名称 as deviceName,
-        id(n) as tagId,
-        n.名称 as name,
-        n.编码 as tagCode,
-        n.源标签点名 as srcTagName,
-        n.源标签点描述 as srcTagDesc,
-        n.单位 as unit
+        <choose>
+            <when test="type == '部件'">
+                MATCH (n:Instance:测点)
+                -[:CHILD_NODE*0..]->(c:部件:Instance)
+                -[:CHILD_NODE*0..]->(d:设备:Instance)
+                -[:CHILD_NODE*0..]->(m:子系统:Instance)
+                -[:CHILD_NODE*0..]->(nm:系统:Instance)
+                WHERE c.名称 = #{parentName}
+                RETURN
+                    id(nm) as systemId,
+                    nm.名称 as systemName,
+                    id(m) as subSystemId,
+                    m.名称 as subSystemName,
+                    id(d) as deviceId,
+                    d.名称 as deviceName,
+                    id(c) as componentId,
+                    c.名称 as componentName,
+                    id(n) as tagId,
+                    n.名称 as name,
+                    n.编码 as tagCode,
+                    n.源标签点名 as srcTagName,
+                    n.源标签点描述 as srcTagDesc,
+                    n.单位 as unit
+            </when>
+            <otherwise>
+                MATCH
+                (n:Instance:测点)
+                -[:CHILD_NODE*0..]->(d:设备:Instance)
+                -[:CHILD_NODE*0..]->(m:子系统:Instance)
+                -[:CHILD_NODE*0..]->(nm:系统:Instance)
+                WHERE 1=1
+                <if test="type != null and type != '' and parentName != null and parentName != ''">
+                    <choose>
+                        <when test="type == '系统'">
+                            AND nm.名称 = #{parentName}
+                        </when>
+                        <when test="type == '子系统'">
+                            AND m.名称 = #{parentName}
+                        </when>
+                        <when test="type == '设备'">
+                            AND d.名称 = #{parentName}
+                        </when>
+                    </choose>
+                </if>
+                RETURN
+                    id(nm) as systemId,
+                    nm.名称 as systemName,
+                    id(m) as subSystemId,
+                    m.名称 as subSystemName,
+                    id(d) as deviceId,
+                    d.名称 as deviceName,
+                    id(n) as tagId,
+                    n.名称 as name,
+                    n.编码 as tagCode,
+                    n.源标签点名 as srcTagName,
+                    n.源标签点描述 as srcTagDesc,
+                    n.单位 as unit
+            </otherwise>
+        </choose>
     </select>
 
     <select id="selectEnvironmentalExamplesByFuzzyMatching" resultType="java.util.Map">
