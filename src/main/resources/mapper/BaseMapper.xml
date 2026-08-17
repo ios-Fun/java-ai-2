@@ -109,13 +109,22 @@
     <select id="getAllTags" resultType="java.util.Map">
         <choose>
             <when test="type == '部件'">
-                MATCH (n:Instance:测点)
+                MATCH (n:Instance:测点
+                <choose>
+                    <when test='tagType != null and tagType == "模拟量"'>
+                        :模拟量
+                    </when>
+                    <when test='tagType != null and tagType == "开关量"'>
+                        :开关量
+                    </when>
+                </choose>)
                 -[:CHILD_NODE*0..]->(c:部件:Instance)
                 -[:CHILD_NODE*0..]->(d:设备:Instance)
                 -[:CHILD_NODE*0..]->(m:子系统:Instance)
                 -[:CHILD_NODE*0..]->(nm:系统:Instance)
                 WHERE c.名称 = #{parentName}
                 RETURN
+                    distinct
                     id(nm) as systemId,
                     nm.名称 as systemName,
                     id(m) as subSystemId,
@@ -133,7 +142,15 @@
             </when>
             <otherwise>
                 MATCH
-                (n:Instance:测点)
+                (n:Instance:测点
+                <choose>
+                    <when test='tagType != null and tagType == "模拟量"'>
+                        :模拟量
+                    </when>
+                    <when test='tagType != null and tagType == "开关量"'>
+                        :开关量
+                    </when>
+                </choose>)
                 -[:CHILD_NODE*0..]->(d:设备:Instance)
                 -[:CHILD_NODE*0..]->(m:子系统:Instance)
                 -[:CHILD_NODE*0..]->(nm:系统:Instance)
@@ -152,6 +169,7 @@
                     </choose>
                 </if>
                 RETURN
+                    distinct
                     id(nm) as systemId,
                     nm.名称 as systemName,
                     id(m) as subSystemId,

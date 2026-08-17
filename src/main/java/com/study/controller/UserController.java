@@ -87,8 +87,8 @@ public class UserController {
     }
 
     @PostMapping("/getAllTags")
-    public List<Map> getAllTags(String type, String parentName) {
-        return baseMapper.getAllTags(type, parentName);
+    public List<Map> getAllTags(@RequestParam String type, @RequestParam String parentName, @RequestParam(required = false) String tagType) {
+        return baseMapper.getAllTags(type, parentName, tagType);
     }
 
     @PostMapping("/selectEnvironmentalExamplesByFuzzyMatching")
