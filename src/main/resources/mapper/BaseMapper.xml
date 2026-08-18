@@ -88,7 +88,7 @@
         RETURN name
     </select>
     <select id="getSubSystemIdByTTS" resultType="java.lang.Integer">
-        MATCH (a)-[:CHILD_NODE*0..]->(c:子系统:Instance)
+        MATCH (a)
         WHERE 1=1
         <if test="tagId != null">
             AND id(a) = #{tagId}
@@ -99,7 +99,11 @@
         <if test="srcTagName != null">
             AND a.源标签点名 = #{srcTagName}
         </if>
-        return id(c) limit 1
+        OPTIONAL MATCH (a)-[:CHILD_NODE*0..]->(ss:子系统:Instance)
+        OPTIONAL MATCH (a)-[:CHILD_NODE]->(s:系统:Instance)
+        OPTIONAL MATCH (a)-[:CHILD_NODE]->(p:电厂:Instance)
+        RETURN id(coalesce(ss, s, p))
+        LIMIT 1
     </select>
     <select id="getInstanceList" resultType ="java.util.Map">
         MATCH (n:Instance)
@@ -223,5 +227,22 @@
         n.源标签点描述 as srcTagDesc,
         n.单位 as unit,
         tagType as tagType
+    </select>
+    <select id="getLoadRateIndicatorByUnitId" resultType="java.util.Map">
+        match(n:Instance:指标)-[:CHILD_NODE]->(m)
+        where n.名称 contains "负荷率"
+        <if test="unitId != null">
+            and id(m)=#{unitId}
+        </if>
+        <if test="unitId == null">
+        and m:电厂:Instance
+        </if>
+        return
+            id(n) as id,
+            n.名称 as name,
+            n.编码 as tagCode,
+            n.类别 as type
+        order by name
+        limit 1
     </select>
 </mapper>

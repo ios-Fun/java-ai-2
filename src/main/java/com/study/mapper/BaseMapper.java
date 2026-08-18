@@ -33,4 +33,6 @@ public interface BaseMapper {
     List<String> getPathByNodeId(Integer nodeId);
 
     List<Map> selectEnvironmentalExamplesByFuzzyMatching(@Param("id") Integer id, @Param("tagName") String tagName, @Param("fuzzyName") String fuzzyName);
+
+    Map getLoadRateIndicatorByUnitId(@Param("unitId") Integer unitId);
 }

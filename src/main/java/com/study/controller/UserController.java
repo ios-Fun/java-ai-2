@@ -97,4 +97,9 @@ public class UserController {
                                                                 @RequestParam(required = false) String tagName) {
         return baseMapper.selectEnvironmentalExamplesByFuzzyMatching(id, tagName, fuzzyName);
     }
+
+    @PostMapping("/getLoadRateIndicatorByUnitId")
+    public Map getLoadRateIndicatorByUnitId(@RequestParam(required = false) Integer unitId) {
+        return baseMapper.getLoadRateIndicatorByUnitId(unitId);
+    }
 }
