@@ -27,7 +27,7 @@
             where jz.名称 contains #{unitName}
         </if>
         return distinct
-            n.源标签点名 as srcTagName, n.名称 as tagName, n.编码 as tagCode, n.源标签点描述 as tagDesc, n.类别 as tagType, n.单位 as tagUnit,
+            id(n) as tagId, n.源标签点名 as srcTagName, n.名称 as tagName, n.编码 as tagCode, n.源标签点描述 as tagDesc, n.类别 as tagType, n.单位 as tagUnit,
             attr.名称 as attrName, attr.编码 as attrCode, attr.描述 as attrDesc, attr.类别 as attrType, attr.单位 as attrUnit,
             bj.名称 as partName, bj.编码 as partCode, bj.描述 as partDesc, id(bj) as partId,
             sb.名称 as assetName, sb.编码 as assetCode, sb.描述 as assetDesc, id(sb) as assetId,
@@ -257,5 +257,33 @@
         ORDER BY depth DESC
         WITH tagId, COLLECT(n.名称)[0] AS assetName, COLLECT(id(n))[0] AS assetId
         RETURN tagId, assetName, assetId
+    </select>
+
+    <select id="getDefectModeByTagList" resultType ="java.util.Map">
+        MATCH (child)-[:CHILD_NODE*1..10]->(parent:Instance:故障模式:Logic)
+        WHERE id(child) IN
+        <foreach collection="tagList" item="id" open="[" separator="," close="]">
+            #{id}
+        </foreach>
+        WITH parent,  count(DISTINCT child) AS cnt
+        WHERE cnt = size(<foreach collection="tagList" item="id" open="[" separator="," close="]">
+            #{id}
+        </foreach>)
+        RETURN id(parent) as id
+        parent.名称 as name
+    </select>
+
+    <select id="getBasicTagListByShadowFeatureId" resultType="Map">
+        match (tag:Instance:模拟量:测点)-[:CHILD_NODE]->(attr:Instance:特征)&lt;-[:REFERENCE_SHADOW]-(shadowFeature:Fault:Shadow:特征)
+        where id(shadowFeature) = #{shadowFeatureId}
+        return id(tag) as id,
+                tag.名称 as 名称,
+                tag.编码 as 编码
+    </select>
+
+    <select id="getAllGraph" resultType="Map">
+        MATCH (n:`故障模式`:Instance)-[:CHILD_NODE*0..]->(m:Instance:设备)
+        where m.名称 = #{deviceName}
+        RETURN distinct n.名称 as name
     </select>
 </mapper>

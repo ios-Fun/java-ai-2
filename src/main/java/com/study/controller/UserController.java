@@ -100,6 +100,21 @@ public class UserController {
         return baseMapper.getLoadRateIndicatorByUnitId(unitId);
     }
 
+    @PostMapping("/getDefectModeByTagList")
+    public List getDefectModeByTagList(@RequestBody List<Long> tagList) {
+        return baseMapper.getDefectModeByTagList(tagList);
+    }
+
+    @PostMapping("/getBasicTagListByShadowFeatureId")
+    public List<Map> getBasicTagListByShadowFeatureId(@RequestBody Long shadowFeatureId) {
+        return baseMapper.getBasicTagListByShadowFeatureId(shadowFeatureId);
+    }
+
+    @PostMapping("/getAllGraph")
+    List<Map> getAllGraph(@RequestParam String deviceName){
+        return baseMapper.getAllGraph(deviceName);
+    }
+
     @PostMapping("/getAssetInfos")
     public List<Map> getAssetInfos(@RequestBody Map tagIds) {
         return baseMapper.getAssetInfos(tagIds);

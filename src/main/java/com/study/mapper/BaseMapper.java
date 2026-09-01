@@ -36,5 +36,11 @@ public interface BaseMapper {
 
     Map getLoadRateIndicatorByUnitId(@Param("unitId") Integer unitId);
 
+    List getDefectModeByTagList(@Param("tagList") List<Long> tagList);
+
+    List<Map> getBasicTagListByShadowFeatureId(@Param("shadowFeatureId") Long shadowFeatureId);
+
+    List<Map> getAllGraph(@Param("deviceName") String deviceName);
+
     List<Map> getAssetInfos(Map params);
 }
