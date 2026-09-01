@@ -245,4 +245,17 @@
         order by name
         limit 1
     </select>
+    <select id="getAssetInfos" resultType="java.util.Map">
+        UNWIND [
+        <foreach collection="tagIds" item="item" separator=",">
+            toInteger(${item})
+        </foreach>
+        ] AS tagId
+        MATCH path = (m)-[:CHILD_NODE*0..]->(n:Instance:设备)
+        WHERE id(m) = tagId
+        WITH tagId, path, n, length(path) AS depth
+        ORDER BY depth DESC
+        WITH tagId, COLLECT(n.名称)[0] AS assetName, COLLECT(id(n))[0] AS assetId
+        RETURN tagId, assetName, assetId
+    </select>
 </mapper>

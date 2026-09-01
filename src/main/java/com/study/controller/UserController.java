@@ -2,10 +2,7 @@ package com.study.controller;
 
 import com.study.mapper.BaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -101,5 +98,10 @@ public class UserController {
     @PostMapping("/getLoadRateIndicatorByUnitId")
     public Map getLoadRateIndicatorByUnitId(@RequestParam(required = false) Integer unitId) {
         return baseMapper.getLoadRateIndicatorByUnitId(unitId);
+    }
+
+    @PostMapping("/getAssetInfos")
+    public List<Map> getAssetInfos(@RequestBody Map tagIds) {
+        return baseMapper.getAssetInfos(tagIds);
     }
 }
