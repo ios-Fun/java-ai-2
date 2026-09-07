@@ -269,7 +269,7 @@
         WHERE cnt = size(<foreach collection="tagList" item="id" open="[" separator="," close="]">
             #{id}
         </foreach>)
-        RETURN id(parent) as id
+        RETURN id(parent) as id,
         parent.名称 as name
     </select>
 
