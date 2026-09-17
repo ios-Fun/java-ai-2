@@ -286,4 +286,11 @@
         where m.名称 = #{deviceName}
         RETURN distinct n.名称 as name
     </select>
+    <select id="getUnitList" resultType="java.util.Map">
+        MATCH (n:`机组`:Instance) RETURN id(n) as unitId,n.名称 as name LIMIT 25
+    </select>
+    <select id="getIndicators" resultType="java.util.Map">
+        MATCH (n:`指标`:Instance)-[:CHILD_NODE*0..]->(d) where id(d)=#{unitId} and (n.名称 =~'.*效率.*' or n.名称 =~'.*用电率.*'or n.名称 =~'.*耗.*')  RETURN n.编码 as tagCode,n.名称 as name limit 300
+    </select>
+
 </mapper>
