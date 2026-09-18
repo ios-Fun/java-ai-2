@@ -43,4 +43,6 @@ public interface BaseMapper {
     List<Map> getAllGraph(@Param("deviceName") String deviceName);
 
     List<Map> getAssetInfos(Map params);
+
+    List<Map> getAllEvent(@Param("nodeId") Integer nodeId);
 }
