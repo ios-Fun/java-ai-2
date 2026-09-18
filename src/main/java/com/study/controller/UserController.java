@@ -119,4 +119,9 @@ public class UserController {
     public List<Map> getAssetInfos(@RequestBody Map tagIds) {
         return baseMapper.getAssetInfos(tagIds);
     }
+
+    @PostMapping("/getAllEvent")
+    public List<Map> getAllEvent(@RequestParam Integer nodeId) {
+        return baseMapper.getAllEvent(nodeId);
+    }
 }
