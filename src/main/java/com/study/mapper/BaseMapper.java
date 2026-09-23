@@ -46,4 +46,8 @@ public interface BaseMapper {
     List<Map> getAssetInfos(Map params);
 
     List<Map> getAllEvent(@Param("nodeId") Integer nodeId);
+
+    List<Map> getAllEventList(@Param("unitId") Integer unitId , @Param("eventId") Integer eventId);
+
+    List<Map> getNode(@Param("nodeId") Integer nodeId);
 }
