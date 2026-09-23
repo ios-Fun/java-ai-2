@@ -132,4 +132,12 @@ public class UserController {
     public List<Map> getAllEvent(@RequestParam Integer nodeId) {
         return baseMapper.getAllEvent(nodeId);
     }
+    @PostMapping("/getAllEventList")
+    public List<Map> getAllEventList(@RequestParam Integer unitId , @RequestParam Integer eventId) {
+        return baseMapper.getAllEventList(unitId , eventId);
+    }
+    @PostMapping("/getNode")
+    public  List<Map> getNode(@RequestParam Integer nodeId) {
+        return baseMapper.getNode(nodeId);
+    }
 }
