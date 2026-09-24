@@ -300,7 +300,10 @@
 
     <select id="getAllEventList" resultType="java.util.Map">
         match(z:Instance:事件)-[r2:CHILD_NODE]->(g:Instance:事件)-[r1:CHILD_NODE]->(n:Instance:`事件`)-[r:CHILD_NODE]->(m:`机组`)
-            where id(m)=#{unitId} and id(n)=#{eventId} return n.名称 as eventName ,g.名称 as childEventName ,z.名称 as childEventName1 , n.编码 as eventCode ,g.编码 as childEventCode ,z.编码 as childEventCode1 , id(n) as eventId ,id(g) as childEventId ,id(z) as childEventId1 order by id(n) , id(g)
+            where id(m)=#{unitId} and id(n)=#{eventId}
+            return n.名称 as eventName ,g.名称 as childEventName ,z.名称 as childEventName1 ,
+                n.编码 as eventCode ,g.编码 as childEventCode ,z.编码 as childEventCode1 , id(n) as eventId ,id(g) as childEventId ,id(z) as childEventId1
+                order by id(n) , id(g)  ,id(z)
     </select>
     <select id="getNode" resultType="java.util.Map">
         match(n:Instance) where id(n)=#{nodeId} return n
