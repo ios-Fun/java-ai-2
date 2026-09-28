@@ -1,11 +1,12 @@
 package com.study.controller;
 
 import com.study.mapper.BaseMapper;
+import com.study.tools.CommonTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/graph")
@@ -139,5 +140,49 @@ public class UserController {
     @PostMapping("/getNode")
     public  List<Map> getNode(@RequestParam Integer nodeId) {
         return baseMapper.getNode(nodeId);
+    }
+
+    private static final Set<String> NOISE = new HashSet<>(Arrays.asList(
+            "运行状况","运行情况","运行状态","运行怎","情况","状态","如何","怎么样","怎样",
+            "最近","今天","昨天","健康","评估","有没有","问题","是否","正常","时间",
+            "想","下","看","查","一下","趋势","历史","曲线","数据","值","的"
+    ));
+
+    @PostMapping("/getSimilarityBenchmarkList")
+    public Map<String, Object> getSimilarityBenchmarkList(@RequestParam String userMessage) {
+        for (String w : NOISE)
+            userMessage = userMessage.replace(w, "");
+        List<Map> benchmarkInstanceList = baseMapper.getBenchmarkInstanceList();
+        List<Map> result = benchmarkInstanceList.stream().map(row -> {
+            Map<String, Object> flatMap = new LinkedHashMap<>();
+
+            // 1. 先放入外层的 id 和 labels
+            flatMap.put("id", row.get("id"));
+            flatMap.put("labels", row.get("labels"));
+
+            // 2. 将 properties 内的所有键值对提取到外层
+            Object props = row.get("properties");
+            if (props instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> propMap = (Map<String, Object>) props;
+                flatMap.putAll(propMap);
+            }
+
+            return flatMap;
+        }).collect(Collectors.toList());
+        List<String> resColumn = new ArrayList<>();
+        resColumn.add("id");resColumn.add("名称");resColumn.add("编码");
+        List<Map> bestMatchingStr = CommonTool.getBestMatchingStr(result, userMessage, 0, "标杆", "labels", "名称", resColumn);
+        if (bestMatchingStr != null && !bestMatchingStr.isEmpty()) {
+            Map bestMatch = bestMatchingStr.get(0);
+            Long id = Long.valueOf(bestMatch.get("id").toString());
+            List<Map<String, Object>> rawList = baseMapper.getBenchmarkDetail(id);
+
+            Map<String, Object> resMap = new HashMap<>();
+            resMap.put("JAVAResult", rawList);
+            resMap.put("bestMatch", bestMatch);
+            return resMap;
+        }
+        return new HashMap<>();
     }
 }

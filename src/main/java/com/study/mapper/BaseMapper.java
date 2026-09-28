@@ -28,6 +28,8 @@ public interface BaseMapper {
 
     List<Map> getInstanceList();
 
+    List<Map> getBenchmarkInstanceList();
+
     List<Map> getAllTags(@Param("type")  String type, @Param("parentName")  String parentName, @Param("tagType") String tagType);
     List<Map>  getUnitList();
     List<Map> getIndicators(@Param("unitId") Integer unitId);
@@ -44,6 +46,8 @@ public interface BaseMapper {
     List<Map> getAllGraph(@Param("deviceName") String deviceName);
 
     List<Map> getAssetInfos(Map params);
+
+    List<Map<String, Object>> getBenchmarkDetail(Long id);
 
     List<Map> getAllEvent(@Param("nodeId") Integer nodeId);
 

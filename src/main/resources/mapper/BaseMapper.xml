@@ -110,6 +110,10 @@
         WHERE n.类别 <![CDATA[<>]]> "特征"
         RETURN n.类别 AS type, id(n) AS id, n.编码 AS code, n.名称 AS name
     </select>
+    <select id="getBenchmarkInstanceList" resultType ="java.util.Map">
+        MATCH (n:Instance:标杆)
+        RETURN properties(n) as properties, id(n) as id, apoc.text.join(labels(n), ',') as labels
+    </select>
     <select id="getAllTags" resultType="java.util.Map">
         <choose>
             <when test="type == '部件'">
@@ -310,4 +314,18 @@
     </select>
 
 
+
+    <select id="getBenchmarkDetail" resultType="java.util.Map">
+        MATCH (k:Instance)-[:CHILD_NODE]->(m:Instance)-[:CHILD_NODE]->(n:`标杆`:Instance)
+        WHERE id(n) = #{id}
+        WITH DISTINCT k, m
+        RETURN
+        properties(k) AS kProps,
+        CASE
+        WHEN '因素' IN labels(m) THEN 'factor'
+        WHEN '范围' IN labels(m) THEN 'range'
+        ELSE 'unknown'
+        END AS mType,
+        properties(m) AS mProps
+    </select>
 </mapper>
