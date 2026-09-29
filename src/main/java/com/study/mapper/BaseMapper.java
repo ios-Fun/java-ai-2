@@ -54,4 +54,6 @@ public interface BaseMapper {
     List<Map> getAllEventList(@Param("unitId") Integer unitId , @Param("eventId") Integer eventId);
 
     List<Map> getNode(@Param("nodeId") Integer nodeId);
+
+    List<Map<String, Object>> getIndicatorByBaseName(@Param("name") String name, @Param("limit") Integer limit);
 }

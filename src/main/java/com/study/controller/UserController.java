@@ -185,4 +185,11 @@ public class UserController {
         }
         return new HashMap<>();
     }
+
+    @PostMapping("/getIndicatorByBaseName")
+    public List<Map<String, Object>> getIndicatorByBaseName(@RequestParam String name,
+                                                            @RequestParam Integer limit) {
+        List<Map<String, Object>> indicatorByBaseName = baseMapper.getIndicatorByBaseName(name, limit);
+        return indicatorByBaseName;
+    }
 }

@@ -108,7 +108,7 @@
     <select id="getInstanceList" resultType ="java.util.Map">
         MATCH (n:Instance)
         WHERE n.类别 <![CDATA[<>]]> "特征"
-        RETURN n.类别 AS type, id(n) AS id, n.编码 AS code, n.名称 AS name
+        RETURN n.类别 AS type, id(n) AS id, n.编码 AS code, n.名称 AS name, n.原名称 as baseName
     </select>
     <select id="getBenchmarkInstanceList" resultType ="java.util.Map">
         MATCH (n:Instance:标杆)
@@ -327,5 +327,14 @@
         ELSE 'unknown'
         END AS mType,
         properties(m) AS mProps
+    </select>
+
+    <select id="getIndicatorByBaseName" resultType="java.util.Map">
+        MATCH (n:`指标`:Instance)
+        WHERE n.原名称 = #{name}
+        RETURN n.原名称 AS name,
+        n.公式说明 AS formula,
+        id(n) AS nodeId
+        LIMIT ${limit}
     </select>
 </mapper>
